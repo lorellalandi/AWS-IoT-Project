@@ -1,0 +1,67 @@
+<div class="row">
+    <div class="col-3 ml-4" *ngIf="latest1">
+        <h3>Station {{latest1.stationId}}</h3>
+        <ol>
+            <li>Temperature: {{latest1.temperature}} Celsius</li>
+            <li>Humidity: {{latest1.humidity}}%</li>
+            <li>Wind direction: {{latest1.windDirection}} degrees</li>
+            <li>Wind intensity: {{latest1.windIntensity}} m/s</li>
+            <li>Rain height: {{latest1.rainHeight}} mm/h</li>
+        </ol>
+       <p>Last updated at: {{latest1.timestamp | date:'medium'}}</p> 
+    </div>
+    <div class="col-3 mb-4" *ngIf="latest2">
+        <h3>Station {{latest2.stationId}}</h3>
+        <ol>
+            <li>Temperature: {{latest2.temperature}} Celsius</li>
+            <li>Humidity: {{latest2.humidity}}%</li>
+            <li>Wind direction: {{latest2.windDirection}} degrees</li>
+            <li>Wind intensity: {{latest2.windIntensity}} m/s</li>
+            <li>Rain height: {{latest2.rainHeight}} mm/h</li>
+        </ol>
+       <p>Last updated at: {{latest2.timestamp | date:'medium'}}</p> 
+    </div>
+</div>
+
+<div class="form-row align-items-center mb-2">
+    <div class="col-3 my-1">
+        <label class="mr-sm-2" for="inlineFormCustomSelect">Preference</label>
+        <select [(ngModel)]="selectedValue" class="custom-select mr-sm-2" id="inlineFormCustomSelect"
+            (change)="getLastHourValues($event)">
+            <option disabled selected value> -- select an option -- </option>
+                <option value="temperature">Temperature</option>
+                <option value="humidity">Humidity</option>
+                <option value="windDirection">Wind direction</option>
+                <option value="windIntensity">Wind intensity</option>
+                <option value="rainHeight">Rain height</option>
+
+        </select>
+    </div>
+    <div class="col-6 mt-4">
+        <button type="button" class="btn btn-dark mr-3" (click)="refreshLatestValue(1)">Refresh Latest Value Station
+            1</button>
+        <button type="button" class="btn btn-dark mr-3" (click)="refreshLatestValue(2)">Refresh Latest Value Station
+            2</button>
+        <button type="button" class="btn btn-dark" (click)="refreshLastHourValue()">Refresh Last Hour All Stations</button>
+    </div>
+</div>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Station Id</th>
+            <th scope="col">Value</th>
+            <th scope="col">Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr *ngFor="let item of lastHour; let i = index">
+            <th scope="row">{{i+1}}</th>
+            <td>{{item.stationId}}</td>
+            <td>{{item.value}}</td>
+            <td>{{item.timestamp | date:'medium'}}</td>
+        </tr>
+    </tbody>
+</table>
