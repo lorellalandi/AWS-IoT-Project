@@ -8,7 +8,7 @@ Hands-on Tutorial on Hackster.io: https://www.hackster.io/lorella-landi/built-an
 
 Introduction video on Youtube: https://youtu.be/I-muWkMIImw
 
-# Assignment 2 RIOT
+# Assignment 2 RIOT (tag 2.0)
 Hands-on Tutorial on Hackster.io: https://www.hackster.io/lorella-landi/riot-os-application-connected-to-aws-iot-1b69d6
 
 Introduction video on Youtube: https://youtu.be/VRldXhW5k44
