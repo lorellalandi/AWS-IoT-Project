@@ -1,4 +1,4 @@
-# name of your application
+# Name of your application
 APPLICATION = lorawan
 
 # Use the ST B-L072Z-LRWAN1 board by default:
