@@ -3,6 +3,6 @@
 <p>motion z-axis: {{z}}!</p>
 <p>Overall motion: {{overallMotion}}</p>
 <p>activity: {{activity}}</p>
-<p>sensor: {{sensorw | json}}</p>
-<p>secondsNow: {{secondsNow}}</p>
-<p>secondsSensor: {{secondsSensor}}</p>
+<ng-container *ngFor="let log of logMsg">
+    <p>logMsg: {{log}}</p>
+</ng-container>
