@@ -13,13 +13,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { MonitorComponent } from './monitor/monitor.component';
-import { ProvaSensorComponent } from './prova-sensor/prova-sensor.component';
+import { ActivityRecognitionComponent } from './activity-recognition/activity-recognition.component';
+import { AccelerometerSensorComponent } from './accelerometer-sensor/accelerometer-sensor.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MonitorComponent,
-    ProvaSensorComponent
+    ActivityRecognitionComponent,
+    AccelerometerSensorComponent
   ],
   imports: [
     BrowserModule,

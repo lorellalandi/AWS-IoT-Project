@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MonitorComponent } from './monitor/monitor.component';
-import { ProvaSensorComponent } from './prova-sensor/prova-sensor.component';
+import { ActivityRecognitionComponent } from './activity-recognition/activity-recognition.component';
 
 const routes: Routes = [
   { path: '', component: MonitorComponent },
-  { path: 'prova', component: ProvaSensorComponent }
+  { path: 'prova', component: ActivityRecognitionComponent }
 
 ];
 
