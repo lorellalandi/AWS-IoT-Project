@@ -7,7 +7,7 @@ import { AccelerometerSensorComponent } from './accelerometer-sensor/acceleromet
 const routes: Routes = [
   { path: '', component: MonitorComponent },
   { path: 'prova', component: ActivityRecognitionComponent },
-  { path: 'prova1', component: AccelerometerSensorComponent }
+  { path: 'prova2', component: AccelerometerSensorComponent }
 
 ];
 

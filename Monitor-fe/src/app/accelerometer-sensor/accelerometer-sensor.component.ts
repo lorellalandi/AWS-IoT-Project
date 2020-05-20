@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LinearAccelerationSensor } from '../../../node_modules/motion-sensors-polyfill/src/motion-sensors.js';
 import { MqttService } from 'ngx-mqtt';
+import { ActivityCloud } from '../model/activityCloud.model.js';
+import { MonitorService } from '../monitor.service.js';
 
 @Component({
   selector: 'app-accelerometer-sensor',
@@ -9,7 +11,11 @@ import { MqttService } from 'ngx-mqtt';
 })
 export class AccelerometerSensorComponent implements OnInit {
 
-  constructor(private readonly mqttService: MqttService) { }
+  private latest: ActivityCloud;
+  private lastHour: ActivityCloud[];
+  private activityType = 'cloud';
+
+  constructor(private readonly mqttService: MqttService, private readonly monitorService: MonitorService) { }
 
   historicMotion = {
     x: [],
@@ -27,7 +33,7 @@ export class AccelerometerSensorComponent implements OnInit {
 
     sensor.onreading = () => {
 
-        this.manageAndSendValues(sensor);   
+        this.manageAndSendValues(sensor);
 
     };
 
@@ -39,17 +45,18 @@ export class AccelerometerSensorComponent implements OnInit {
     this.historicMotion.y.push(Number(sensor.y.toFixed(2)));
     this.historicMotion.z.push(Number(sensor.z.toFixed(2)));
 
-    if(this.historicMotion.z.length == 60 ){
+    if(this.historicMotion.z.length === 60 ){
       const timestamp = new Date().getTime() + '';
 
-      const message = JSON.stringify({"activityRecognition": "cloud","activityTimestamp": timestamp, "historicMotion": this.historicMotion});
+      const message = JSON.stringify({activityRecognition: 'cloud',activityTimestamp: timestamp, historicMotion: this.historicMotion});
       this.sendmsg(message);
       this.historicMotion = {
         x: [],
         y: [],
         z: []
       };
-
+      this.refreshLatestValue();
+      this.refreshLastHourValues();
     }
 
   }
@@ -58,5 +65,21 @@ export class AccelerometerSensorComponent implements OnInit {
     // use unsafe publish for non-ssl websockets
     this.mqttService.unsafePublish(this.topicname, msg, { qos: 1, retain: false });
   }
+
+  refreshLastHourValues() {
+    this.monitorService.getActivities(false, this.activityType).subscribe(res => {
+      this.lastHour = res.sort((a, b) => {
+        return a.activityTimestamp.getTime() > b.activityTimestamp.getTime() ? -1
+          : a.activityTimestamp.getTime() < b.activityTimestamp.getTime() ? 1 : 0;
+      });
+    });
+  }
+
+  refreshLatestValue() {
+    this.monitorService.getActivities(true, this.activityType).subscribe(res => {
+      this.latest = res[0];
+    });
+  }
+
 
 }

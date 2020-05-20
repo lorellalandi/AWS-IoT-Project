@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LinearAccelerationSensor } from 'motion-sensors-polyfill/src/motion-sensors';
+import { MonitorService } from '../monitor.service';
+import { ActivityEdge } from '../model/activityEdge.model';
 import { MqttService } from 'ngx-mqtt';
 
 @Component({
@@ -9,7 +11,11 @@ import { MqttService } from 'ngx-mqtt';
 })
 export class ActivityRecognitionComponent implements OnInit {
 
-  constructor(private readonly mqttService: MqttService) { }
+  private latest: ActivityEdge;
+  private lastHour: ActivityEdge[];
+  private activityType = 'edge';
+
+  constructor(private readonly mqttService: MqttService, private readonly monitorService: MonitorService) { }
 
   historicMotion = {
     x: [],
@@ -17,7 +23,7 @@ export class ActivityRecognitionComponent implements OnInit {
     z: []
   };
 
-  activity= '';
+  activity = '';
   topicname = 'accelerometer/values';
 
   ngOnInit() {
@@ -26,9 +32,7 @@ export class ActivityRecognitionComponent implements OnInit {
     sensor.start();
 
     sensor.onreading = () => {
-
-        this.motion(sensor);
-      
+      this.motion(sensor);
     };
 
   }
@@ -58,11 +62,13 @@ export class ActivityRecognitionComponent implements OnInit {
 
     const oldActivity = this.activity;
     this.updateStatus();
-   
-    if (this.activity != oldActivity){
+
+    if (this.activity !== oldActivity) {
       const timestamp = new Date().getTime() + '';
-      const message = JSON.stringify({"activityRecognition": "edge", "activityTimestamp": timestamp, "activity": this.activity});
+      const message = JSON.stringify({ activityRecognition: 'edge', activityTimestamp: timestamp, activity: this.activity });
       this.sendmsg(message);
+      this.refreshLatestValue();
+      this.refreshLastHourValues();
     }
   }
 
@@ -87,6 +93,21 @@ export class ActivityRecognitionComponent implements OnInit {
   sendmsg(msg: string): void {
     // use unsafe publish for non-ssl websockets
     this.mqttService.unsafePublish(this.topicname, msg, { qos: 1, retain: false });
+  }
+
+  refreshLastHourValues() {
+    this.monitorService.getActivities(false, this.activityType).subscribe(res => {
+      this.lastHour = res.sort((a, b) => {
+        return a.activityTimestamp.getTime() > b.activityTimestamp.getTime() ? -1
+          : a.activityTimestamp.getTime() < b.activityTimestamp.getTime() ? 1 : 0;
+      });
+    });
+  }
+
+  refreshLatestValue() {
+    this.monitorService.getActivities(true, this.activityType).subscribe(res => {
+      this.latest = res[0];
+    });
   }
 
 }

@@ -1,3 +1,5 @@
+import { ObjResponse } from './rootDynamoObj.model';
+
 export class PayloadResponse {
     Payload: RootObjectResponse;
 }
@@ -14,9 +16,4 @@ export class StationResponse {
     rainHeight: ObjResponse;
     windIntensity: ObjResponse;
     windDirection: ObjResponse;
-}
-
-export class ObjResponse {
-    N?: number | string;
-    S?: number | string;
 }
