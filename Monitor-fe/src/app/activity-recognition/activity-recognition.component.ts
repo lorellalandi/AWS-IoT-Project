@@ -17,18 +17,17 @@ export class ActivityRecognitionComponent implements OnInit {
     z: []
   };
 
-  activity: string;
-  topicname = 'activity';
+  activity= '';
+  topicname = 'accelerometer/values';
 
   ngOnInit() {
 
     const sensor = new LinearAccelerationSensor({ frequency: 1 });
-
     sensor.start();
 
     sensor.onreading = () => {
 
-      this.motion(sensor);
+        this.motion(sensor);
       
     };
 
@@ -37,9 +36,9 @@ export class ActivityRecognitionComponent implements OnInit {
   updateStatus() {
     const movement = this.mostRecentMovementOverall(30);
 
-    if (movement > 100) {
+    if (movement > 90) {
       this.activity = 'running';
-    } else if (movement > 45) {
+    } else if (movement > 20) {
       this.activity = 'walking';
     } else {
       this.activity = 'standing still';
@@ -61,8 +60,9 @@ export class ActivityRecognitionComponent implements OnInit {
     this.updateStatus();
    
     if (this.activity != oldActivity){
-      const timestamp = new Date().getTime();
-      this.sendmsg('{ timestamp: ' + timestamp.toString + ', activity: ' + this.activity + '}');
+      const timestamp = new Date().getTime() + '';
+      const message = JSON.stringify({"activityRecognition": "edge", "activityTimestamp": timestamp, "activity": this.activity});
+      this.sendmsg(message);
     }
   }
 
@@ -86,7 +86,7 @@ export class ActivityRecognitionComponent implements OnInit {
 
   sendmsg(msg: string): void {
     // use unsafe publish for non-ssl websockets
-    this.mqttService.unsafePublish(this.topicname, msg, { qos: 1, retain: true });
+    this.mqttService.unsafePublish(this.topicname, msg, { qos: 1, retain: false });
   }
 
 }
