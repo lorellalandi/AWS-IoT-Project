@@ -14,6 +14,7 @@ export class AccelerometerSensorComponent implements OnInit {
   private latest: ActivityCloud;
   private lastHour: ActivityCloud[];
   private activityType = 'cloud';
+  activityTimestamp = new Date();
 
   constructor(private readonly mqttService: MqttService, private readonly monitorService: MonitorService) { }
 

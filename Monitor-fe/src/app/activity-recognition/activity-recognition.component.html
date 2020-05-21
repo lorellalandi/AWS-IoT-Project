@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-3 ml-4" *ngIf="latest">
+    <div class="col-12 col-md-3 ml-4" *ngIf="latest">
         <h3>Latest Activity</h3>
         <ol>
             <li>Activity: {{latest.activity}}</li>
@@ -11,12 +11,12 @@
 <div class="form-row align-items-center mb-2">
  
     <div class="col-6 mt-4">
-        <button type="button" class="btn btn-dark mr-3" (click)="refreshLatestValue()">Refresh Latest Value</button>
-        <button type="button" class="btn btn-dark" (click)="refreshLastHourValues()">Refresh Last Hour Values</button>
+        <button type="button" class="btn btn-dark mr-3 mb-2" (click)="refreshLatestValue()">Refresh Latest</button>
+        <button type="button" class="btn btn-dark" (click)="refreshLastHourValues()">Refresh Last Hour</button>
     </div>
 </div>
 
-<table class="table">
+<table class="table-responsive">
     <thead class="thead-dark">
         <tr>
             <th scope="col">#</th>

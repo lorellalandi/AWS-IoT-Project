@@ -1,9 +1,9 @@
 export class Station {
     stationId: number;
-    humidity: number;
-    temperature: number;
+    humidity: string | number;
+    temperature: string | number;
     timestamp: Date;
-    rainHeight: number;
-    windIntensity: number;
-    windDirection: number;
+    rainHeight: string | number;
+    windIntensity: string | number;
+    windDirection: string | number;
 };

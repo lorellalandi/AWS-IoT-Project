@@ -22,16 +22,16 @@ export class MonitorService {
     return this.http.get<PayloadResponse[]>(API_URL + 'station?id=' + id).pipe(map(data => {
       const stationPayload: StationResponse = data[0].Payload.M;
       const station = new Station();
-      station.humidity = stationPayload.humidity.N ? Number(stationPayload.humidity.N) : Number(stationPayload.humidity.S);
-      station.temperature = stationPayload.temperature.N ? Number(stationPayload.temperature.N) : Number(stationPayload.temperature.S);
+      station.humidity = stationPayload.humidity.N ? stationPayload.humidity.N : stationPayload.humidity.S;
+      station.temperature = stationPayload.temperature.N ? stationPayload.temperature.N : stationPayload.temperature.S;
       station.stationId = stationPayload.id.N ? Number(stationPayload.id.N) : Number(stationPayload.id.S);
       station.timestamp = stationPayload.timestamp.N ? new Date(Number(stationPayload.timestamp.N))
         : new Date(Number(stationPayload.timestamp.S));
-      station.windDirection = stationPayload.windDirection.N ? Number(stationPayload.windDirection.N)
-        : Number(stationPayload.windDirection.S);
-      station.windIntensity = stationPayload.windIntensity.N ? Number(stationPayload.windIntensity.N)
-        : Number(stationPayload.windIntensity.S);
-      station.rainHeight = stationPayload.rainHeight.N ? Number(stationPayload.rainHeight.N) : Number(stationPayload.rainHeight.S);
+      station.windDirection = stationPayload.windDirection.N ? stationPayload.windDirection.N
+        : stationPayload.windDirection.S;
+      station.windIntensity = stationPayload.windIntensity.N ? stationPayload.windIntensity.N
+        : stationPayload.windIntensity.S;
+      station.rainHeight = stationPayload.rainHeight.N ? stationPayload.rainHeight.N : stationPayload.rainHeight.S;
       return station;
     }));
   }
