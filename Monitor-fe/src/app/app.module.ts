@@ -2,8 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { MqttModule, IMqttServiceOptions } from 'ngx-mqtt';
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
-  hostname: '192.168.1.204',
-  port: 9001,
+  hostname: 'localhost', // Replace "localhost" with your IP
+  port: 9001,   // MQTT Client port
   path: '/mqtt'
 };
 

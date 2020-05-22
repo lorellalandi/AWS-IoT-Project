@@ -106,7 +106,7 @@ getLatestValues = function (tableName, partitionKeyName, partitionKeyValue) {
     })
 }
 
-// Returns the latest values
+// Returns the latest values of a table by the table name, the parition key name and the parititon key value
 var latestValues = function (tableName, partitionKeyName, partitionKeyValue) {
     return {
         TableName: tableName,
@@ -122,7 +122,7 @@ var latestValues = function (tableName, partitionKeyName, partitionKeyValue) {
 }
 
 
-// Endpoint which returns the latest values for a given table "tableName" (query param)
+// Endpoint which returns the last hour values for a given "activityRecognition" type (query param)
 app.get('/api/lastHourActivities', function (req, res) {
     getLastHourByActivityRecognition('UserActivity', req.query.activityRecognition).then(
         function (response) {
@@ -154,7 +154,7 @@ getLastHourByActivityRecognition = function (tableName, activityRecognition) {
     })
 }
 
-// Returns all the values received during the last hour
+// Returns all the values received during the last hour for a given activity recognition type
 var lastHourByActivityRecognition = function (tableName, activityRecognition) {
     var date = new Date()
     date.setHours(date.getHours() - 1)

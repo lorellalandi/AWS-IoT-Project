@@ -24,13 +24,17 @@ export class ActivityRecognitionComponent implements OnInit {
   };
 
   activity = '';
-  topicname = 'accelerometer/values';
+  topicname = 'accelerometer/values'; // topic name
+
 
   ngOnInit() {
 
-    const sensor = new LinearAccelerationSensor({ frequency: 1 });
+    const sensor = new LinearAccelerationSensor({ frequency: 1 });  // frequency: 1 means that the sensor sends a message every second
+
+
     sensor.start();
 
+    // start every time the sensor sends a value
     sensor.onreading = () => {
       this.motion(sensor);
     };
@@ -40,6 +44,7 @@ export class ActivityRecognitionComponent implements OnInit {
   updateStatus() {
     const movement = this.mostRecentMovementOverall(30);
 
+    // activity recognition
     if (movement > 90) {
       this.activity = 'running';
     } else if (movement > 20) {
@@ -49,6 +54,7 @@ export class ActivityRecognitionComponent implements OnInit {
     }
   }
 
+  // get the average motion of all the axis
   mostRecentMovementOverall(numberOfHistoricPoints) {
     return (this.mostRecentMovement(this.historicMotion.x, numberOfHistoricPoints, true) +
       this.mostRecentMovement(this.historicMotion.y, numberOfHistoricPoints, true) +
@@ -56,6 +62,7 @@ export class ActivityRecognitionComponent implements OnInit {
   }
 
   motion(sensor: any) {
+    // collect the values
     this.historicMotion.x.push(sensor.x);
     this.historicMotion.y.push(sensor.y);
     this.historicMotion.z.push(sensor.z);
@@ -63,15 +70,17 @@ export class ActivityRecognitionComponent implements OnInit {
     const oldActivity = this.activity;
     this.updateStatus();
 
-    if (this.activity !== oldActivity) {
+    // send the message only if the user activity is changed
+    if (this.activity != oldActivity) {
       const timestamp = new Date().getTime() + '';
-      const message = JSON.stringify({ activityRecognition: 'edge', activityTimestamp: timestamp, activity: this.activity });
+      const message = JSON.stringify({ "activityRecognition": "edge", "activityTimestamp": timestamp, "activity": this.activity });
       this.sendmsg(message);
       this.refreshLatestValue();
       this.refreshLastHourValues();
     }
   }
 
+  // get the weighted average of a given number of values of an axis
   mostRecentMovement(array, numberOfHistoricPoints, removeNegatives) {
     if (array.length > numberOfHistoricPoints) {
       let totalSum = 0;
@@ -85,14 +94,15 @@ export class ActivityRecognitionComponent implements OnInit {
           totalSum += currentElement;
         }
       }
-      return totalSum * 100 / numberOfHistoricPoints;
+      return totalSum * 100 / numberOfHistoricPoints; // give the value in percentual
     }
     return 0; // not enough data yet
   }
 
+  // send message to the MQTT broker
   sendmsg(msg: string): void {
     // use unsafe publish for non-ssl websockets
-    this.mqttService.unsafePublish(this.topicname, msg, { qos: 1, retain: false });
+    this.mqttService.unsafePublish(this.topicname, msg, { qos: 1, retain: false });   // retain: false beacuse AWS doesn't accept retained messages
   }
 
   refreshLastHourValues() {

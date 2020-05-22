@@ -7,7 +7,7 @@ import { StationResponse, PayloadResponse } from './model/station.response';
 import { StationSensor } from './model/stationSensor.model';
 import { ActivityCloudResponse } from './model/activityCloud.response';
 import { ActivityCloud } from './model/activityCloud.model';
-const API_URL = 'http://localhost:5000/api/';
+const API_URL = 'http://localhost:5000/api/'; // replace "localhost" with your IP
 
 
 @Injectable({

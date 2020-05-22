@@ -24,14 +24,15 @@ export class AccelerometerSensorComponent implements OnInit {
     z: []
   };
 
-  topicname = 'accelerometer/values';
+  topicname = 'accelerometer/values'; // topic name
 
   ngOnInit() {
 
-    const sensor = new LinearAccelerationSensor({ frequency: 1 });
+    const sensor = new LinearAccelerationSensor({ frequency: 1 });  // frequency: 1 means that the sensor sends a message every second
 
     sensor.start();
 
+    // start every time the sensor sends a value
     sensor.onreading = () => {
 
         this.manageAndSendValues(sensor);
@@ -42,10 +43,12 @@ export class AccelerometerSensorComponent implements OnInit {
 
   manageAndSendValues(sensor: any) {
 
+    // collects the sensor values
     this.historicMotion.x.push(Number(sensor.x.toFixed(2)));
     this.historicMotion.y.push(Number(sensor.y.toFixed(2)));
     this.historicMotion.z.push(Number(sensor.z.toFixed(2)));
 
+    // send the data of the last 60 seconds
     if(this.historicMotion.z.length === 60 ){
       const timestamp = new Date().getTime() + '';
 
@@ -56,15 +59,17 @@ export class AccelerometerSensorComponent implements OnInit {
         y: [],
         z: []
       };
+      // refresh the page with the new values
       this.refreshLatestValue();
       this.refreshLastHourValues();
     }
 
   }
 
+  // send message to the MQTT broker
   sendmsg(msg: string): void {
     // use unsafe publish for non-ssl websockets
-    this.mqttService.unsafePublish(this.topicname, msg, { qos: 1, retain: false });
+    this.mqttService.unsafePublish(this.topicname, msg, { qos: 1, retain: false });   // retain: false beacuse AWS doesn't accept retained messages
   }
 
   refreshLastHourValues() {
