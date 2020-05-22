@@ -30,7 +30,7 @@ app.get('/api/lastHour', function (req, res) {
 
 // Endpoint which returns the latest values for a given station "id" (query param)
 app.get('/api/station', function (req, res) {
-    getLatestValuesByStationId(req.query.id).then(
+    getLatestValues('Station', 'StationId', req.query.id).then(
         function (response) {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -60,9 +60,37 @@ getLastHour = function () {
     })
 }
 
-getLatestValuesByStationId = function (id) {
+// Returns all the values received during the last hour from all the station
+var lastHour = function () {
+    var date = new Date()
+    date.setHours(date.getHours() - 1)
+    var time = date.getTime() + '';
+
+    return {
+        TableName: "Station",
+        FilterExpression: "StationTimestamp > :val",
+        ExpressionAttributeValues: { ":val": { "S": time } }
+    }
+};
+
+
+// Endpoint which returns the latest values for a given "activityRecognition" type (query param)
+app.get('/api/latestActivity', function (req, res) {
+    getLatestValues('UserActivity', 'activityRecognition', req.query.activityRecognition).then(
+        function (response) {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            res.send(response);
+        })
+        .catch(function (err) {
+            console.log(err)
+            res.send('Error');
+        });
+});
+
+getLatestValues = function (tableName, partitionKeyName, partitionKeyValue) {
     return new Promise(function (resolve, reject) {
-        ddb.query(latestValues(id), function (err, data) {
+        ddb.query(latestValues(tableName, partitionKeyName, partitionKeyValue), function (err, data) {
             console.log("Quering");
             if (err) {
                 console.log("Error", err);
@@ -78,28 +106,71 @@ getLatestValuesByStationId = function (id) {
     })
 }
 
-// Returns the latest values received from a specified station
-var latestValues = function (id) {
+// Returns the latest values of a table by the table name, the parition key name and the parititon key value
+var latestValues = function (tableName, partitionKeyName, partitionKeyValue) {
     return {
-        ExpressionAttributeValues: {
-            ':s': { S: id }
+        TableName: tableName,
+        KeyConditions: {
+            [partitionKeyName]:{
+                ComparisonOperator:"EQ",
+                AttributeValueList: [ { "S": partitionKeyValue } ]
+            }
         },
-        KeyConditionExpression: 'StationId = :s',
         Limit: 1,
-        ScanIndexForward: false,
-        TableName: 'Station'
-    };
+        ScanIndexForward: false
+    }
 }
 
-// Returns all the values received during the last hour from all the station
-var lastHour = function () {
+
+// Endpoint which returns the last hour values for a given "activityRecognition" type (query param)
+app.get('/api/lastHourActivities', function (req, res) {
+    getLastHourByActivityRecognition('UserActivity', req.query.activityRecognition).then(
+        function (response) {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            res.send(response);
+        })
+        .catch(function (err) {
+            console.log(err)
+            res.send('Error');
+        });
+});
+
+getLastHourByActivityRecognition = function (tableName, activityRecognition) {
+    return new Promise(function (resolve, reject) {
+        ddb.query(lastHourByActivityRecognition(tableName, activityRecognition), function (err, data) {
+            console.log("Quering");
+            if (err) {
+                console.log("Error", err);
+                reject(new Error("Error rows is undefined"));
+            } else {
+                console.log("Success", data.Items);
+                data.Items.forEach(function (element, index, array) {
+                    console.log(JSON.stringify(element));
+                });
+                resolve(data.Items);
+            }
+        })
+    })
+}
+
+// Returns all the values received during the last hour for a given activity recognition type
+var lastHourByActivityRecognition = function (tableName, activityRecognition) {
     var date = new Date()
     date.setHours(date.getHours() - 1)
     var time = date.getTime() + '';
 
     return {
-        TableName: "Station",
-        FilterExpression: "StationTimestamp > :val",
-        ExpressionAttributeValues: { ":val": { "S": time } }
+        TableName: tableName,
+        KeyConditions: {
+            "activityRecognition":{
+                ComparisonOperator:"EQ",
+                AttributeValueList: [ { "S": activityRecognition } ]
+            },
+            "activityTimestamp":{
+                ComparisonOperator:"GT",
+                AttributeValueList: [ { "S": time } ]
+            }
+        }
     }
 };

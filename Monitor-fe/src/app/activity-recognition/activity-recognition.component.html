@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-12 col-md-3 ml-4" *ngIf="latest">
+        <h3>Latest Activity</h3>
+        <ol>
+            <li>Activity: {{latest.activity}}</li>
+        </ol>
+        <p>Last updated at: {{latest.activityTimestamp | date:'medium'}}</p>
+    </div>
+</div>
+
+<div class="form-row align-items-center mb-2">
+ 
+    <div class="col-6 mt-4">
+        <button type="button" class="btn btn-dark mr-3 mb-2" (click)="refreshLatestValue()">Refresh Latest</button>
+        <button type="button" class="btn btn-dark" (click)="refreshLastHourValues()">Refresh Last Hour</button>
+    </div>
+</div>
+
+<table class="table-responsive">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Activity</th>
+            <th scope="col">Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr *ngFor="let item of lastHour; let i = index">
+            <th scope="row">{{i+1}}</th>
+            <td>{{item.activity}}</td>
+            <td>{{item.activityTimestamp | date:'medium'}}</td>
+        </tr>
+    </tbody>
+</table>

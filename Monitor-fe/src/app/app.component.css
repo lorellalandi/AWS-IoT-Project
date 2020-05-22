@@ -1,3 +1,7 @@
 .no-scroll-x {
     overflow-x: hidden;
 }
+
+.inline-block {
+    display: inline-block;
+}
