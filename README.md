@@ -18,5 +18,10 @@ Hands-on Tutorial on Hackster.io: https://www.hackster.io/lorella-landi/riot-os-
 
 Introduction video on Youtube: https://youtu.be/dTk6uxpa-Is
 
+# Assignment 4 (tag 4.0)
+Hands-on Tutorial on Hackster.io: https://www.hackster.io/lorella-landi/user-activity-recognition-44eb9b
+
+Introduction video on Youtube: https://youtu.be/crpCrWdyH3s
+
 # LinkedIn
 https://www.linkedin.com/in/lorella-landi-a485361a3/
