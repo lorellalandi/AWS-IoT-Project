@@ -1,6 +1,6 @@
 This repository has been created as part of my MSc degree at Sapienza University of Rome for the 2019/2020 Internet of Things course.
 
-Every tag has all the component of a specific assignment.
+Every tag has all the components of a specific assignment.
 
 # Assignment 1 (tag 1.0)
 
